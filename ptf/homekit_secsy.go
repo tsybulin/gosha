@@ -41,40 +41,61 @@ type hksecsy struct {
 	eventBus evt.Bus
 }
 
-func (hk *hksecsy) stateRemoteUpdate(state int) {
+func (hk *hksecsy) targetStateRemoteUpdate(state int) {
+	srv := svc.NewRegistry(hk.eventBus).GetDomainService(cmp.DomainAlarm).(svc.Alarm)
+	cs := hk.accsecsy.SecuritySystem.SecuritySystemCurrentState
+
 	switch state {
 	case characteristic.SecuritySystemTargetStateDisarm:
-		svc.NewRegistry(hk.eventBus).GetDomainService(cmp.DomainAlarm).(svc.Alarm).Disarm(hk.alarm.GetID())
-		hk.accsecsy.SecuritySystem.SecuritySystemTargetState.SetValue(characteristic.SecuritySystemTargetStateDisarm)
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateDisarmed)
+		srv.Disarm(hk.alarm.GetID())
+		cs.SetValue(characteristic.SecuritySystemCurrentStateDisarmed)
 	case characteristic.SecuritySystemTargetStateStayArm:
-		svc.NewRegistry(hk.eventBus).GetDomainService(cmp.DomainAlarm).(svc.Alarm).ArmHome(hk.alarm.GetID())
-		hk.accsecsy.SecuritySystem.SecuritySystemTargetState.SetValue(characteristic.SecuritySystemTargetStateStayArm)
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateStayArm)
+		srv.ArmHome(hk.alarm.GetID())
+		cs.SetValue(characteristic.SecuritySystemCurrentStateStayArm)
 	case characteristic.SecuritySystemTargetStateAwayArm:
-		svc.NewRegistry(hk.eventBus).GetDomainService(cmp.DomainAlarm).(svc.Alarm).ArmAway(hk.alarm.GetID())
-		hk.accsecsy.SecuritySystem.SecuritySystemTargetState.SetValue(characteristic.SecuritySystemTargetStateAwayArm)
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateAwayArm)
+		srv.ArmAway(hk.alarm.GetID())
+		cs.SetValue(characteristic.SecuritySystemCurrentStateAwayArm)
 	case characteristic.SecuritySystemTargetStateNightArm:
-		svc.NewRegistry(hk.eventBus).GetDomainService(cmp.DomainAlarm).(svc.Alarm).ArmNight(hk.alarm.GetID())
-		hk.accsecsy.SecuritySystem.SecuritySystemTargetState.SetValue(characteristic.SecuritySystemTargetStateNightArm)
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateNightArm)
+		srv.ArmNight(hk.alarm.GetID())
+		cs.SetValue(characteristic.SecuritySystemCurrentStateNightArm)
+	}
+
+}
+func (hk *hksecsy) currentStateRemoteUpdate(state int) {
+	srv := svc.NewRegistry(hk.eventBus).GetDomainService(cmp.DomainAlarm).(svc.Alarm)
+
+	switch state {
+	case characteristic.SecuritySystemCurrentStateDisarmed:
+		srv.Disarm(hk.alarm.GetID())
+	case characteristic.SecuritySystemCurrentStateStayArm:
+		srv.ArmHome(hk.alarm.GetID())
+	case characteristic.SecuritySystemCurrentStateAwayArm:
+		srv.ArmAway(hk.alarm.GetID())
+	case characteristic.SecuritySystemCurrentStateNightArm:
+		srv.ArmNight(hk.alarm.GetID())
 	}
 
 }
 
 func (hk *hksecsy) stateLocalUpdate(state string) {
+	cs := hk.accsecsy.SecuritySystem.SecuritySystemCurrentState
+	ts := hk.accsecsy.SecuritySystem.SecuritySystemTargetState
+
 	switch state {
 	case cmp.AlarmStateDisarmed.String():
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateDisarmed)
+		ts.SetValue(characteristic.SecuritySystemTargetStateDisarm)
+		cs.SetValue(characteristic.SecuritySystemCurrentStateDisarmed)
 	case cmp.AlarmStateArmedHome.String():
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateStayArm)
+		ts.SetValue(characteristic.SecuritySystemTargetStateStayArm)
+		cs.SetValue(characteristic.SecuritySystemCurrentStateStayArm)
 	case cmp.AlarmStateArmedAway.String():
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateAwayArm)
+		ts.SetValue(characteristic.SecuritySystemTargetStateAwayArm)
+		cs.SetValue(characteristic.SecuritySystemCurrentStateAwayArm)
 	case cmp.AlarmStateArmedNight.String():
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateNightArm)
+		ts.SetValue(characteristic.SecuritySystemTargetStateNightArm)
+		cs.SetValue(characteristic.SecuritySystemCurrentStateNightArm)
 	case cmp.AlarmStateTriggered.String():
-		hk.accsecsy.SecuritySystem.SecuritySystemCurrentState.SetValue(characteristic.SecuritySystemCurrentStateAlarmTriggered)
+		cs.SetValue(characteristic.SecuritySystemCurrentStateAlarmTriggered)
 	}
 }
 
@@ -112,7 +133,8 @@ func (hk *homekit) newhksecsy(c cmp.Alarm) *hksecsy {
 		acc.SecuritySystem.SecuritySystemTargetState.SetValue(characteristic.SecuritySystemTargetStateNightArm)
 	}
 
-	acc.SecuritySystem.SecuritySystemTargetState.OnValueRemoteUpdate(hks.stateRemoteUpdate)
+	acc.SecuritySystem.SecuritySystemCurrentState.OnValueRemoteUpdate(hks.currentStateRemoteUpdate)
+	acc.SecuritySystem.SecuritySystemTargetState.OnValueRemoteUpdate(hks.targetStateRemoteUpdate)
 
 	return hks
 }
