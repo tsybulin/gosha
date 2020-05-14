@@ -1,0 +1,45 @@
+# this is a comment
+platforms:
+  - mqtt: gosha
+    host: "1.2.3.4:1883"
+    login: MQTT_LOGIN
+    password: "MQTT_PASSWORD"
+  - web: ":8228"
+    auth_key: gOsHa666
+  - weather: "http://api.openweathermap.org/data/2.5/weather?lat=12.32&lon=56.78&units=metric&lang=ru&APPID=OPENWEATHERAPPKEY"
+    period: '30m'
+
+# requires config/homekit folder for db 
+  - homekit: Gosha
+    pin: '15031966'
+    switch.cabinet_tablelamp: 2
+    switch.cabinet_outlet1: 3
+    light.cabinet_backlight: 4
+    alarm.sbu: 5
+
+# includes:
+#   - areas/remotes.yaml
+#   - areas/sbu.yaml
+#   - areas/cabinet/components.yaml
+#   - areas/cabinet/automations.yaml
+#   - areas/hall/components.yaml
+#   - areas/hall/automations.yaml
+#   - areas/corridor/components.yaml
+#   - areas/corridor/automations.yaml
+#   - areas/bathroom/components.yaml
+#   - areas/bathroom/automations.yaml
+
+components:
+  - sensor: theweather
+    platform: weather
+  
+# mikrotik devices
+  - binary_sensor: xiaomia2
+    platform: mqtt
+    device_class: device
+    availability_topic: tele/mqttrf/LWT
+    payload_available: Online
+    payload_not_available: Offline
+    state_topic: location/xiaomia2
+    payload_on: home
+    payload_off: not_home

@@ -1,0 +1,290 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Roboto' , 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background-color: #053c2f;
+}
+
+#gosha {
+    margin: auto;
+    padding: 0px;
+}
+
+#gosha footer {
+    overflow: auto;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+@keyframes blinker { to { opacity: 0; } }
+
+#discomessage {
+    color: red;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 300px;
+    animation: blinker 1.7s cubic-bezier(.5, 0, 1, 1) infinite alternate ;
+}
+
+div.nav {
+    float: left;
+    width: 70px;
+    text-align: center;
+    margin: 0px 5px;
+    cursor: pointer;
+    color: #fff;
+    opacity: 0.5;
+}
+
+div.nav.active {
+    opacity: 1;
+}
+
+.nav-page-icon {
+    font-size: 32px;
+    line-height: 70px;
+    text-align: center;
+}
+
+#pages {
+    padding: 10px ;
+}
+
+div.page {
+    overflow: auto;
+    height: 550px;
+    /* background: #074133; */
+}
+
+.page-title {
+    width: 200px;
+    text-align: center;
+    color: #fafafa;
+    font-size: 35px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+div.group {
+    /* background: #064233; */
+    overflow: auto;
+    margin-bottom: 10px;
+}
+
+div.card {
+    width: 200px;
+    height: 200px;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #fafafa;
+}
+
+div.spacer {
+    float: left;
+    height: 200px;
+    width: 200px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+div.on {
+    background-color: #ffffff47;
+}
+
+div.off {
+    background-color: #ffffff26;
+}
+
+.animated {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+
+div.gauge {
+    width: 75%;
+    height: 75%;
+}
+
+@keyframes fadeOutRight {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+}
+
+.fadeOutRight {
+    -webkit-animation-name: fadeOutRight;
+    animation-name: fadeOutRight;
+}
+
+.card-icon {
+    font-size: 90px;
+    line-height: 70px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.off .card-icon{
+    color: #fafafa;
+}
+
+.on .card-icon {
+    color: #e3bc00;
+}
+
+.card-title {
+    display: inline-block;
+    margin-left: 10px;
+    padding-top: 50px;
+    font-size: 20px;
+    vertical-align: bottom;
+}
+
+#currtime {
+    float: left;
+    margin-left: 30px;
+    font-size: 28px;
+    color: #fff;
+    font-weight: bold;
+    line-height: 70px;
+    width: 100px;
+    margin-right: 100px;
+    text-align: center;
+    white-space: pre;
+}
+
+#screensaver {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #666;
+    font-size: 40px;
+}
+
+.screensaver-time {
+    width: 100px;
+    white-space: pre;
+}
+
+.screensaver-content {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.gauge-card {
+    text-align: center;
+}
+
+div.gauge {
+    margin-top: 8%;
+    margin-left: 12.5%;
+    width: 75%;
+    height: 75%;
+}
+
+.sensor-value {
+    margin-top: -40%;
+    font-size: 20px;
+}
+
+.gauge-card .card-title {
+    padding-top: 60px;
+}
+
+div.weather-state {
+    margin-top: 5px ;
+    margin-right: 5px;
+    font-size: 12px;
+    text-align: right;
+}
+
+div.weather-icon-container {
+    margin-top: 16px;
+    text-align: center;
+}
+
+div.weather-icon-container i.weather-icon {
+    color: #fff;
+    font-size: 72px;
+}
+
+div.weather-temp {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 30px;
+}
+
+div.weather-attrs {
+    line-height: 40px;
+    text-align: center;
+    white-space: pre-wrap;
+    opacity: 0.8;
+}
+
+div.card {
+    overflow: auto;
+}
+
+.card-brightness-container {
+    margin-top: -170px;
+    margin-left: 155px;
+    width: 40px;
+    height: 190px;
+    overflow: auto;
+}
+
+.brightness-control {
+    height: 40px ;
+    background-color: #053c2f1f;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px ;
+    border-radius: 5px;
+}
+
+.brightness-control.up {
+    margin-top: 60px;
+    cursor: pointer;
+}
+
+.brightness-control.down {
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+div.alarm-mode-popup {
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    background-color: #053c2f;
+    border: 1px solid #03241c;
+    padding: 5px;
+    overflow: auto;
+}
+
+div.alarm-mode-popup div.card {
+    margin-bottom: 0px;
+}
+
+div.alarm-mode-popup div.card:nth-child(4) {
+    margin-right: 0px;
+}
+
+div.sensor-state {
+    text-align: center;
+    font-size: 40px;
+    /* line-height: 60px; */
+    margin-top: 50px;
+}            

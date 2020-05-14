@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>&#x1F3E0; GOSHA Dashboard</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="cache-control" content="max-age=0">
+        <meta http-equiv="cache-control" content="no-cache">
+        <meta http-equiv="expires" content="-1">
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 11:00:00 GMT">
+        <meta http-equiv="pragma" content="no-cache">
+        <link rel="shortcut icon" href="/local/favicon.png" />
+        <link rel="apple-touch-icon" href="/local/favicon.png">
+        <link rel="stylesheet" href="/local/styles/materialdesignicons.min.css">
+        <link rel="stylesheet" href="/local/styles/open-weather-icons.css">
+        <link rel="stylesheet" href="/local/styles/style.css">
+        <script src="/local/js/vue.js"></script>
+        <script src="/local/js/vue-svg-gauge.min.js"></script>
+        <script src="/local/config.js"></script>
+        <script src="/local/js/app.js"></script>
+    </head>
+    <body>
+        <div id="gosha">
+            <section v-if="!connected">
+                <div id="discomessage">Connecting...</div>
+            </section>
+            <section id="pages" v-show="connected && !screensaverActive">
+                <gosha-page v-for="page in pages" v-bind:page="page" v-bind:key="page.id" v-if="currentPage == page.id">
+                    <gosha-group v-for="group in page.groups" v-bind:group="group" v-bind:key="group.id">
+                        <template v-for="card in group.cards">
+                            <gosha-switch v-if="card.domain == 'switch'" v-bind:card="card" v-bind:key="card.id"></gosha-switch>
+                            <gosha-light v-if="card.domain == 'light'" v-bind:card="card" v-bind:key="card.id"></gosha-light>
+                            <gosha-sensor v-if="card.domain == 'sensor'" v-bind:card="card" v-bind:key="card.id"></gosha-sensor>
+                            <gosha-weather v-if="card.domain == 'weather'" v-bind:card="card" v-bind:key="card.id"></gosha-weather>
+                            <gosha-gauge v-if="card.domain == 'gauge'" v-bind:card="card" v-bind:key="card.id"></gosha-gauge>
+                            <gosha-binary-sensor v-if="card.domain == 'binary_sensor'" v-bind:card="card" v-bind:key="card.id"></gosha-binary-sensor>
+                            <gosha-service v-if="card.domain == 'service'" v-bind:card="card" v-bind:key="card.id"></gosha-service>
+                            <gosha-alarm v-if="card.domain == 'alarm'" v-bind:card="card" v-bind:key="card.id"></gosha-alarm>
+                            <div v-if="card.domain == 'spacer'" class="spacer" v-bind:style="{ width: card.width * 200 + 'px' }"></div>
+                        </template>
+                    </gosha-group>
+                    </gosha-page>
+                </section>
+            <footer>
+                <div id="currtime">{{ currentTime }}</div>
+                <gosha-nav v-for="page in pages" v-bind:page="page" v-bind:key="page.id" v-bind:class="{ active: currentPage == page.id }"></gosha-nav>
+                <div class="nav" onclick="location.reload(true)">
+                    <div class="nav-page-icon mdi mdi-refresh"></div>
+                </div>
+        
+            </footer>
+            <div id="screensaver" v-if="screensaverActive" v-on:click="screenclick">
+                <div class="screensaver-content">
+                    <div class="screensaver-time">{{ currentTime }}</div>
+                    <div class="screensaver-time">{{ currentDate }}</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
