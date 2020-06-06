@@ -242,6 +242,7 @@ func newWsocketService(eventBus evt.Bus, authKey string, sessionID int32) *wsock
 		upgrader: websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
+			CheckOrigin:     func(r *http.Request) bool { return true },
 		},
 		sb:        &syncbool{v: true},
 		sessionID: sessionID,

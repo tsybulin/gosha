@@ -46,8 +46,8 @@ func main() {
 	serviceregistry = svc.NewRegistry(eventBus)
 	automator = aut.NewAutomator(eventBus)
 
-	configurator = gosha.NewConfigurator(eventBus)
-	configurator.LoadConfig("./config", "config.yaml")
+	configurator = gosha.NewConfigurator(eventBus, "./config", "config.yaml")
+	configurator.LoadConfig()
 
 	ctx := context.Background()
 	<-ctx.Done()

@@ -38,13 +38,19 @@ type Config struct {
 // Configurator ...
 type Configurator struct {
 	eventBus evt.Bus
+	basedir  string
+	file     string
 }
 
 // NewConfigurator ...
-func NewConfigurator(eventBus evt.Bus) *Configurator {
+func NewConfigurator(eventBus evt.Bus, basedir, file string) *Configurator {
 	cg := &Configurator{
 		eventBus: eventBus,
+		basedir:  basedir,
+		file:     file,
 	}
+
+	eventBus.SubscribeAsync(evt.CfgReloadAutomationsTopic, "Configurator.handleReloadAutomations", cg.handleReloadAutomations, false)
 	eventBus.Publish(logger.Topic, logger.LevelInfo, "Configurator started")
 
 	return cg
@@ -134,15 +140,24 @@ func (cg *Configurator) parseConfig(basedir, file string) Config {
 	return config
 }
 
-// LoadConfig ...
-func (cg *Configurator) LoadConfig(basedir, file string) {
-	config := cg.parseConfig(basedir, file)
-
+func (cg *Configurator) loadAatomations(config Config) {
 	if config.Automations != nil {
 		for _, a := range NewAutomations(config.Automations) {
 			cg.eventBus.Publish(aut.RegisterTopic, a)
 		}
 	}
+}
+
+func (cg *Configurator) handleReloadAutomations(bool) {
+	config := cg.parseConfig(cg.basedir, cg.file)
+	cg.loadAatomations(config)
+}
+
+// LoadConfig ...
+func (cg *Configurator) LoadConfig() {
+	config := cg.parseConfig(cg.basedir, cg.file)
+
+	cg.loadAatomations(config)
 
 	if config.Scripts != nil {
 		for _, s := range NewScripts(config.Scripts) {

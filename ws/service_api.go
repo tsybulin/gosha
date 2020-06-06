@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/tsybulin/gosha/cmp"
+	"github.com/tsybulin/gosha/evt"
 	"github.com/tsybulin/gosha/logger"
 	"github.com/tsybulin/gosha/svc"
 )
@@ -53,6 +54,12 @@ func (wbs *webservice) apiComponents(w http.ResponseWriter, r *http.Request) {
 func (wbs *webservice) apiExecute(w http.ResponseWriter, r *http.Request) {
 	v := mux.Vars(r)
 	svc.NewRegistry(nil).Execute(v["service"], v["method"], v["entity"])
+	w.Write([]byte("ok"))
+	wbs.eventBus.Publish(logger.Topic, logger.LevelInfo, "WebService.handle", r.URL.String())
+}
+
+func (wbs *webservice) apiReloadAutomations(w http.ResponseWriter, r *http.Request) {
+	wbs.eventBus.Publish(evt.CfgReloadAutomationsTopic, true)
 	w.Write([]byte("ok"))
 	wbs.eventBus.Publish(logger.Topic, logger.LevelInfo, "WebService.handle", r.URL.String())
 }

@@ -63,6 +63,8 @@ func (wbs *webservice) start() {
 
 	router.HandleFunc("/api/service/{service}/execute/{method}/{entity}", wbs.apiExecute).Methods("POST")
 
+	router.HandleFunc("/api/reload_automations", wbs.apiReloadAutomations).Methods("GET")
+
 	router.HandleFunc("/api/ws", wbs.wsHandler)
 
 	http.ListenAndServe(wbs.listenAddr, router)
