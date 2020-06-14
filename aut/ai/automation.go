@@ -11,8 +11,7 @@ type automation struct {
 	triggers   []aut.Trigger
 	conditions []aut.Condition
 	actions    []aut.Action
-	mux        sync.Mutex
-	busy       bool
+	wg         sync.WaitGroup
 }
 
 func (a *automation) GetID() string {
@@ -31,16 +30,16 @@ func (a *automation) GetContitions() []aut.Condition {
 	return a.conditions
 }
 
-func (a *automation) IsBusy() bool {
-	a.mux.Lock()
-	defer a.mux.Unlock()
-	return a.busy
+func (a *automation) Lock() {
+	a.wg.Add(1)
 }
 
-func (a *automation) SetBusy(b bool) {
-	a.mux.Lock()
-	defer a.mux.Unlock()
-	a.busy = b
+func (a *automation) Unlock() {
+	a.wg.Done()
+}
+
+func (a *automation) Wait() {
+	a.wg.Wait()
 }
 
 // NewAutomations ...
@@ -59,7 +58,6 @@ func NewAutomations(acfg []struct {
 			triggers:   make([]aut.Trigger, 0),
 			conditions: make([]aut.Condition, 0),
 			actions:    make([]aut.Action, 0),
-			busy:       false,
 		}
 
 		for _, trc := range auc.Triggers {

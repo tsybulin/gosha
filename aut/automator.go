@@ -64,11 +64,6 @@ func (ar *automator) executeIfConditions(au Automation) {
 		return
 	}
 
-	if !au.IsBusy() {
-		ar.eventBus.Publish(logger.Topic, logger.LevelError, "Automator.Execute !Busy automation", au.GetID())
-		return
-	}
-
 	ar.eventBus.Publish(logger.Topic, logger.LevelSystem, "Automator.Execute ", au.GetID())
 	ar.exectimes[au.GetID()] = time.Now()
 
@@ -84,17 +79,15 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 	}
 
 	for _, au := range ar.automations {
-		if au.IsBusy() {
-			continue
-		}
+		au.Wait()
 
 		//  debounce events and triggers
 		if time.Now().Sub(ar.exectimes[au.GetID()]) < time.Second {
 			continue
 		}
 
-		au.SetBusy(true)
-		defer au.SetBusy(false)
+		au.Lock()
+		defer au.Unlock()
 
 		fired := false
 		for _, tr := range au.GetTriggers() {
@@ -118,12 +111,10 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 
 func (ar *automator) tickerHandler(now time.Time) {
 	for _, au := range ar.automations {
-		if au.IsBusy() {
-			continue
-		}
+		au.Wait()
 
-		au.SetBusy(true)
-		defer au.SetBusy(false)
+		au.Lock()
+		defer au.Unlock()
 
 		fired := false
 		for _, tr := range au.GetTriggers() {

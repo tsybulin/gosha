@@ -8,6 +8,7 @@ type Automation interface {
 	GetTriggers() []Trigger
 	GetContitions() []Condition
 	GetActions() []Action
-	IsBusy() bool
-	SetBusy(bool)
+	Lock()
+	Unlock()
+	Wait()
 }
