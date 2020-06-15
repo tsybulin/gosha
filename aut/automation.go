@@ -10,5 +10,4 @@ type Automation interface {
 	GetActions() []Action
 	Lock()
 	Unlock()
-	Wait()
 }

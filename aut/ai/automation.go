@@ -11,7 +11,7 @@ type automation struct {
 	triggers   []aut.Trigger
 	conditions []aut.Condition
 	actions    []aut.Action
-	wg         sync.WaitGroup
+	mux        sync.Mutex
 }
 
 func (a *automation) GetID() string {
@@ -31,15 +31,11 @@ func (a *automation) GetContitions() []aut.Condition {
 }
 
 func (a *automation) Lock() {
-	a.wg.Add(1)
+	a.mux.Lock()
 }
 
 func (a *automation) Unlock() {
-	a.wg.Done()
-}
-
-func (a *automation) Wait() {
-	a.wg.Wait()
+	a.mux.Unlock()
 }
 
 // NewAutomations ...

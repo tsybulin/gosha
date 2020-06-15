@@ -79,8 +79,6 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 	}
 
 	for _, au := range ar.automations {
-		au.Wait()
-
 		//  debounce events and triggers
 		if time.Now().Sub(ar.exectimes[au.GetID()]) < time.Second {
 			continue
@@ -111,8 +109,6 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 
 func (ar *automator) tickerHandler(now time.Time) {
 	for _, au := range ar.automations {
-		au.Wait()
-
 		au.Lock()
 		defer au.Unlock()
 
