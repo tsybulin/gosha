@@ -85,7 +85,6 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 		}
 
 		au.Lock()
-		defer au.Unlock()
 
 		fired := false
 		for _, tr := range au.GetTriggers() {
@@ -104,13 +103,14 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 		if fired {
 			ar.executeIfConditions(au)
 		}
+
+		au.Unlock()
 	}
 }
 
 func (ar *automator) tickerHandler(now time.Time) {
 	for _, au := range ar.automations {
 		au.Lock()
-		defer au.Unlock()
 
 		fired := false
 		for _, tr := range au.GetTriggers() {
@@ -123,6 +123,8 @@ func (ar *automator) tickerHandler(now time.Time) {
 		if fired {
 			ar.executeIfConditions(au)
 		}
+
+		au.Unlock()
 	}
 }
 
