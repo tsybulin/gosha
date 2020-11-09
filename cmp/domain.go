@@ -16,6 +16,7 @@ const (
 	DomainTelegram
 	DomainAlarm
 	DomainHomeKit
+	DomainCountdown
 )
 
 // Domains ...
@@ -33,6 +34,7 @@ var Domains = []Domain{
 	DomainTelegram,
 	DomainAlarm,
 	DomainHomeKit,
+	DomainCountdown,
 }
 
 // DomainNames ...
@@ -49,6 +51,7 @@ var DomainNames = []string{
 	"telegram",
 	"alarm",
 	"homekit",
+	"countdown",
 }
 
 func (d Domain) String() string {

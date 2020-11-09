@@ -65,6 +65,10 @@ func CreateComponent(cfg map[string]string) cmp.Component {
 
 	}
 
+	if id := cfg["countdown"]; len(id) > 0 {
+		return intr.NewCountdown(cfg)
+	}
+
 	return nil
 }
 

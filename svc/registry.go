@@ -146,6 +146,15 @@ func (r *registry) Execute(service, action, component string) {
 		default:
 			r.eventBus.Publish(logger.Topic, logger.LevelWarn, "ServiceRegistry.Execute service", service, " unsupported action", action)
 		}
+	case Countdown:
+		switch action {
+		case "start":
+			s.(Countdown).Start(component)
+		case "stop":
+			s.(Countdown).Stop(component)
+		default:
+			r.eventBus.Publish(logger.Topic, logger.LevelWarn, "ServiceRegistry.Execute service", service, " unsupported action", action)
+		}
 	default:
 		r.eventBus.Publish(logger.Topic, logger.LevelWarn, "ServiceRegistry.Execute unsupported service type for:", service)
 	}
@@ -185,6 +194,7 @@ func NewRegistry(eventBus evt.Bus) Registry {
 		r.services[cmp.DomainWeather] = newSensorWeather(eventBus)
 		r.services[cmp.DomainTelegram] = newTelegram(eventBus)
 		r.services[cmp.DomainAlarm] = newAlarmService(eventBus)
+		r.services[cmp.DomainCountdown] = newCountdownService(eventBus)
 
 		registryInstance = r
 	})
