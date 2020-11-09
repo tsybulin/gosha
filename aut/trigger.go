@@ -27,3 +27,11 @@ type TimeTrigger interface {
 	GetAt() time.Time
 	FireTime(time.Time) bool
 }
+
+// CompareTrigger ...
+type CompareTrigger interface {
+	Trigger
+	GetEntityID() string
+	GetValue() float64
+	FireCompare(evt.Event) bool
+}

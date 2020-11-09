@@ -43,13 +43,13 @@ func (mp *mqttPlatform) stateHandlerSensor(c mqttComponent, message mqtt.Message
 		value = buf.String()
 	}
 
-	if value != ms.GetValue() {
-		event := eventFor(c, func() {})
-		event.Event.Data.NewState.State = fmt.Sprint(value)
+	// if value != ms.GetValue() {
+	event := eventFor(c, func() {})
+	event.Event.Data.NewState.State = fmt.Sprint(value)
 
-		mp.eventBus.Publish(evt.StateChangedTopic, event)
-		mp.eventBus.Publish(logger.Topic, logger.LevelDebug, "MqttPlatform.handleSesorState value", ms.GetID(), value)
-	}
+	mp.eventBus.Publish(evt.StateChangedTopic, event)
+	mp.eventBus.Publish(logger.Topic, logger.LevelDebug, "MqttPlatform.handleSesorState value", ms.GetID(), value)
+	// }
 }
 
 func (mp *mqttPlatform) mqttSubscribeSensor(c cmp.Component) {

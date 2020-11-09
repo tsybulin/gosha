@@ -66,12 +66,29 @@ func NewAutomations(acfg []struct {
 				for _, tr := range newTimeTriggers(trc) {
 					au.triggers = append(au.triggers, tr)
 				}
+			case "less_than":
+				for _, tr := range newLessThanTriggers(trc) {
+					au.triggers = append(au.triggers, tr)
+				}
+			case "greater_than":
+				for _, tr := range newGreaterThanTriggers(trc) {
+					au.triggers = append(au.triggers, tr)
+				}
 			}
 		}
 
 		for _, coc := range auc.Conditions {
-			if coc["platform"] == "state" {
+			switch coc["platform"] {
+			case "state":
 				for _, co := range newStateConditions(coc) {
+					au.conditions = append(au.conditions, co)
+				}
+			case "less_than":
+				for _, co := range newLessThanConditions(coc) {
+					au.conditions = append(au.conditions, co)
+				}
+			case "greater_than":
+				for _, co := range newGreaterThanConditions(coc) {
 					au.conditions = append(au.conditions, co)
 				}
 			}

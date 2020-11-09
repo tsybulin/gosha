@@ -2,6 +2,7 @@ package aut
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 
@@ -52,6 +53,16 @@ func (ar *automator) executeIfConditions(au Automation) {
 					fired = fired && sc.SatisfiedState(c.GetID(), c.(cmp.Timer).GetTimerState().String())
 				}
 			}
+		case CompareCondition:
+			cc := co.(CompareCondition)
+			if c := ar.components[cc.GetEntityID()]; c != nil {
+				switch c.(type) {
+				case cmp.Sensor:
+					if value, err := strconv.ParseFloat(fmt.Sprint(c.(cmp.Sensor).GetValue()), 64); err == nil {
+						fired = fired && cc.SatisfiedCompare(c.GetID(), value)
+					}
+				}
+			}
 
 		}
 
@@ -94,6 +105,11 @@ func (ar *automator) stateChangeHandler(event evt.Message) {
 					continue
 				}
 				fired = fired || tr.(StateTrigger).FireState(*event.Event)
+			case CompareTrigger:
+				if tr.(CompareTrigger).GetEntityID() != event.Event.Data.NewState.EntityID {
+					continue
+				}
+				fired = fired || tr.(CompareTrigger).FireCompare(*event.Event)
 			}
 			if fired {
 				break
